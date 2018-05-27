@@ -1,13 +1,24 @@
 package com.dhbw.magicmoney;
 
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 public class RegisterActivity extends AppCompatActivity {
+
+    private UserRegisterTask registerTask = null;
+
+    private EditText nameView;
+    private EditText forenameView;
+    private EditText emailView;
+    private EditText passwordView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +35,119 @@ public class RegisterActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        nameView = (EditText) findViewById(R.id.register_name);
+        forenameView = (EditText) findViewById(R.id.register_forename);
+        emailView = (EditText) findViewById(R.id.register_email);
+        passwordView = (EditText) findViewById(R.id.register_password);
+
+        Button registerButton = (Button) findViewById(R.id.register_register_button);
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptRegister();
+            }
+        });
+
+        Button backButton = (Button) findViewById(R.id.register_back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent myIntent = new Intent(RegisterActivity.this, LoginActivity.class);
+                RegisterActivity.this.startActivity(myIntent);
+            }
+        });
+    }
+
+    private void attemptRegister() {
+        if (registerTask != null) {
+            return;
+        }
+
+        nameView.setError(null);
+        forenameView.setError(null);
+        emailView.setError(null);
+        passwordView.setError(null);
+
+        String name = nameView.getText().toString();
+        String forename = forenameView.getText().toString();
+        String email = emailView.getText().toString();
+        String password = passwordView.getText().toString();
+
+        if (false) {
+
+        } else {
+            //showProgress(true);
+            registerTask = new UserRegisterTask(name, forename, email, password);
+            registerTask.execute((Void) null);
+        }
+    }
+
+    //CHECK STUFF
+
+
+    public class UserRegisterTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String name;
+        private final String forename;
+        private final String email;
+        private final String password;
+
+        UserRegisterTask(String _name, String _forename, String _email, String _password) {
+            name = _name;
+            forename = _forename;
+            email = _email;
+            password = _password;
+
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            // TODO: attempt authentication against a network service.
+
+            try {
+                // Simulate network access.
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                return false;
+            }
+
+
+            if(name.equals("Stefan")){
+                return true;
+            }
+            /*
+            for (String credential : DUMMY_CREDENTIALS) {
+                String[] pieces = credential.split(":");
+                if (pieces[0].equals(mEmail)) {
+                    // Account exists, return true if the password matches.
+                    return pieces[1].equals(mPassword);
+                }
+            }*/
+
+            return false; //CHANGED
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            registerTask = null;
+            //showProgress(false);
+
+            if (success) {
+                finish();
+                Intent myIntent = new Intent(RegisterActivity.this, MainActivity.class);
+                RegisterActivity.this.startActivity(myIntent);
+            } else {
+                emailView.setError(getString(R.string.error_alreadyInUse_email));
+                emailView.requestFocus();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            registerTask = null;
+            //showProgress(false);
+        }
     }
 
 }

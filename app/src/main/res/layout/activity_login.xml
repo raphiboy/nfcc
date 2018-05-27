@@ -74,12 +74,12 @@
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/register1_button"
+                android:id="@+id/register_button"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="REGISTER"
+                android:text="@string/register"
                 android:textStyle="bold" />
 
         </LinearLayout>
