@@ -15,6 +15,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private UserRegisterTask registerTask = null;
 
+    private EditText usernameView;
     private EditText nameView;
     private EditText forenameView;
     private EditText emailView;
@@ -36,6 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        usernameView = (EditText) findViewById(R.id.register_username);
         nameView = (EditText) findViewById(R.id.register_name);
         forenameView = (EditText) findViewById(R.id.register_forename);
         emailView = (EditText) findViewById(R.id.register_email);
@@ -64,11 +66,13 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
+        usernameView.setError(null);
         nameView.setError(null);
         forenameView.setError(null);
         emailView.setError(null);
         passwordView.setError(null);
 
+        String username = usernameView.getText().toString();
         String name = nameView.getText().toString();
         String forename = forenameView.getText().toString();
         String email = emailView.getText().toString();
@@ -78,7 +82,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         } else {
             //showProgress(true);
-            registerTask = new UserRegisterTask(name, forename, email, password);
+            registerTask = new UserRegisterTask(username, name, forename, email, password);
             registerTask.execute((Void) null);
         }
     }
@@ -88,30 +92,25 @@ public class RegisterActivity extends AppCompatActivity {
 
     public class UserRegisterTask extends AsyncTask<Void, Void, Boolean> {
 
+        private final String username;
         private final String name;
         private final String forename;
         private final String email;
         private final String password;
 
-        UserRegisterTask(String _name, String _forename, String _email, String _password) {
-            name = _name;
-            forename = _forename;
-            email = _email;
-            password = _password;
+        UserRegisterTask(String username, String name, String forename, String email, String password) {
+            this.username = username;
+            this.name = name;
+            this.forename = forename;
+            this.email = email;
+            this.password = password;
 
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
 
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
+            User user = new User(username,email,password,name,forename, 0);
 
             if(name.equals("Stefan")){
                 return true;
