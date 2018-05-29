@@ -6,10 +6,10 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "db_user")
 public class User {
 
-    @DatabaseField(columnName = "ID",generatedId = true)
+    @DatabaseField(columnName = "ID",generatedId = true, id=true)
     private int ID;
 
-    @DatabaseField(columnName = "username")
+    @DatabaseField(columnName = "username",canBeNull = false)
     private String username;
 
     @DatabaseField(columnName = "email")
@@ -27,6 +27,10 @@ public class User {
     @DatabaseField(columnName = "Kontostand")
     private double balance;
 
+
+    public User(){
+
+    }
 
     public User(String username, String email, String password, String name, String forename, double balance) {
         this.username = username;

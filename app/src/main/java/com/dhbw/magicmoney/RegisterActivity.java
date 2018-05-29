@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.sql.SQLException;
+
 public class RegisterActivity extends AppCompatActivity {
 
     private UserRegisterTask registerTask = null;
@@ -20,6 +22,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText forenameView;
     private EditText emailView;
     private EditText passwordView;
+    private DBHelper dbHelper = new DBHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,8 +115,10 @@ public class RegisterActivity extends AppCompatActivity {
 
             User user = new User(username,email,password,name,forename, 0);
 
-            if(name.equals("Stefan")){
-                return true;
+            try {
+                dbHelper.createOrUpdate(user);
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
             /*
             for (String credential : DUMMY_CREDENTIALS) {
