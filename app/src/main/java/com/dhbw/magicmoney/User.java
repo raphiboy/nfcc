@@ -3,13 +3,15 @@ package com.dhbw.magicmoney;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-@DatabaseTable(tableName = "db_user")
-public class User {
+import java.io.Serializable;
 
-    @DatabaseField(columnName = "ID",generatedId = true, id=true)
+@DatabaseTable(tableName = "db_user")
+public class User implements Serializable {
+
+    @DatabaseField(columnName = "ID", generatedId = true)
     private int ID;
 
-    @DatabaseField(columnName = "username",canBeNull = false)
+    @DatabaseField(columnName = "username", canBeNull = false)
     private String username;
 
     @DatabaseField(columnName = "email")
@@ -18,10 +20,10 @@ public class User {
     @DatabaseField(columnName = "password")
     private String password;
 
-    @DatabaseField(columnName = "Vorname")
+    @DatabaseField(columnName = "Nachname")
     private String name;
 
-    @DatabaseField(columnName = "Nachname")
+    @DatabaseField(columnName = "Vorname")
     private String forename;
 
     @DatabaseField(columnName = "Kontostand")

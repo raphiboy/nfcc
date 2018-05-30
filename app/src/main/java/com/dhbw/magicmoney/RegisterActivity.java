@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.j256.ormlite.dao.Dao;
+
 import java.sql.SQLException;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -22,7 +24,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText forenameView;
     private EditText emailView;
     private EditText passwordView;
-    private DBHelper dbHelper = new DBHelper(this);
+    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
                 RegisterActivity.this.startActivity(myIntent);
             }
         });
+        dbHelper = new DBHelper(this);
     }
 
     private void attemptRegister() {
