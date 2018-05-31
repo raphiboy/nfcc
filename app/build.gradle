@@ -17,15 +17,13 @@ android {
         }
     }
     packagingOptions {
-        exclude 'com/j256/ormlite/android/README.txt'
-        exclude 'com/j256/ormlite/android/LICENSE.txt'
         exclude 'com/j256/ormlite/core/README.txt'
         exclude 'com/j256/ormlite/core/LICENSE.txt'
     }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.android.support:design:27.1.1'
@@ -34,5 +32,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.j256.ormlite:ormlite-core:5.1'
     implementation 'com.j256.ormlite:ormlite-jdbc:5.1'
-    implementation 'com.j256.ormlite:ormlite-android:5.1'
+    //implementation 'com.j256.ormlite:ormlite-android:5.1'
+    implementation files('libs/mysql-connector-java-5.1.46-bin.jar')
 }

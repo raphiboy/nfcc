@@ -12,8 +12,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.j256.ormlite.dao.Dao;
-
-import java.sql.SQLException;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.support.ConnectionSource;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -24,7 +25,6 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText forenameView;
     private EditText emailView;
     private EditText passwordView;
-    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +64,6 @@ public class RegisterActivity extends AppCompatActivity {
                 RegisterActivity.this.startActivity(myIntent);
             }
         });
-        dbHelper = new DBHelper(this);
     }
 
     private void attemptRegister() {
@@ -87,6 +86,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (false) {
 
         } else {
+            System.out.println("ELSE");
             //showProgress(true);
             registerTask = new UserRegisterTask(username, name, forename, email, password);
             registerTask.execute((Void) null);
@@ -116,12 +116,32 @@ public class RegisterActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Void... params) {
 
+            System.out.println("BG");
+
             User user = new User(username,email,password,name,forename, 0);
 
+            ConnectionSource connectionSource = null;
             try {
-                dbHelper.createOrUpdate(user);
-            } catch (SQLException e) {
-                e.printStackTrace();
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+                // create our data-source for the database
+                connectionSource = new JdbcConnectionSource("jdbc:mysql://den1.mysql2.gear.host:3306/magicmoney", "magicmoney", "magic!");
+                // setup our database and DAOs
+                Dao<User, Integer> accountDao = DaoManager.createDao(connectionSource, User.class);
+                // read and write some data
+                accountDao.create(user);
+                System.out.println("\n\nIt seems to have worked\n\n");
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+            finally {
+                // destroy the data source which should close underlying connections
+                if (connectionSource != null) {
+                    try {
+                        connectionSource.close();
+                    } catch (Exception e){
+                        System.out.println(e);
+                    }
+                }
             }
             /*
             for (String credential : DUMMY_CREDENTIALS) {
@@ -132,7 +152,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }*/
 
-            return false; //CHANGED
+            return true; //CHANGE
         }
 
         @Override

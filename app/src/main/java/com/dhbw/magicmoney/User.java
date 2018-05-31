@@ -14,19 +14,19 @@ public class User implements Serializable {
     @DatabaseField(columnName = "username", canBeNull = false)
     private String username;
 
-    @DatabaseField(columnName = "email")
+    @DatabaseField(columnName = "email", canBeNull = false)
     private String email;
 
-    @DatabaseField(columnName = "password")
+    @DatabaseField(columnName = "password", canBeNull = false)
     private String password;
 
-    @DatabaseField(columnName = "Nachname")
+    @DatabaseField(columnName = "Nachname", canBeNull = false)
     private String name;
 
-    @DatabaseField(columnName = "Vorname")
+    @DatabaseField(columnName = "Vorname", canBeNull = false)
     private String forename;
 
-    @DatabaseField(columnName = "Kontostand")
+    @DatabaseField(columnName = "Kontostand", canBeNull = false)
     private double balance;
 
 
