@@ -94,4 +94,17 @@ public class User implements Serializable {
     public void setBalance(double balance) {
         this.balance = balance;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "ID=" + ID +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", forename='" + forename + '\'' +
+                ", balance=" + balance +
+                '}';
+    }
 }

@@ -3,6 +3,7 @@ package com.dhbw.magicmoney;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -124,14 +125,16 @@ public class RegisterActivity extends AppCompatActivity {
             try {
                 Class.forName("com.mysql.jdbc.Driver").newInstance();
                 // create our data-source for the database
-                connectionSource = new JdbcConnectionSource("jdbc:mysql://den1.mysql2.gear.host:3306/magicmoney", "magicmoney", "magic!");
+                connectionSource = new JdbcConnectionSource("jdbc:mysql://den1.mysql2.gear.host:3306/magicmoney?autoReconnect=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "magicmoney", "magic!");
                 // setup our database and DAOs
                 Dao<User, Integer> accountDao = DaoManager.createDao(connectionSource, User.class);
                 // read and write some data
+                System.out.println(user.toString());
                 accountDao.create(user);
                 System.out.println("\n\nIt seems to have worked\n\n");
             } catch (Exception e) {
                 System.out.println(e);
+                e.printStackTrace();
             }
             finally {
                 // destroy the data source which should close underlying connections
@@ -140,6 +143,7 @@ public class RegisterActivity extends AppCompatActivity {
                         connectionSource.close();
                     } catch (Exception e){
                         System.out.println(e);
+                        e.printStackTrace();
                     }
                 }
             }
