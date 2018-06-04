@@ -30,6 +30,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.support.ConnectionSource;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -170,8 +175,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+        if (password.isEmpty()) {
+            mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
         }
@@ -181,7 +186,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
+        } else if (!RegisterActivity.isValidEmailAddress(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
@@ -198,16 +203,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
         }
-    }
-
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
     }
 
     /**
@@ -316,25 +311,45 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
 
+            boolean sucess;
+
+            User user;
+
+            ConnectionSource connectionSource = null;
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+                // create our data-source for the database
+                connectionSource = new JdbcConnectionSource("jdbc:mysql://den1.mysql2.gear.host:3306/magicmoney?autoReconnect=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "magicmoney", "magic!");
+                // setup our database and DAOs
+                Dao<User, Integer> accountDao = DaoManager.createDao(connectionSource, User.class);
+                // read and write some data
+                user = accountDao.queryForEq("email",mEmail).get(0);
+                System.out.println(user.toString());
+                System.out.println("\n\nIt seems to have worked\n\n");
+                if(user.getPassword().equals(mPassword)) {
+                    sucess = true;
+                } else {
+                    sucess = false;
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+                e.printStackTrace();
+                sucess = false;
             }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
+            finally {
+                // destroy the data source which should close underlying connections
+                if (connectionSource != null) {
+                    try {
+                        connectionSource.close();
+                    } catch (Exception e){
+                        System.out.println(e);
+                        e.printStackTrace();
+                    }
                 }
             }
 
-            // TODO: register the new account here.
-            return false; //CHANGED
+            return sucess;
         }
 
         @Override

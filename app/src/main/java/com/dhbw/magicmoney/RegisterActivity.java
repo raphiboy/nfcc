@@ -17,6 +17,9 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class RegisterActivity extends AppCompatActivity {
 
     private UserRegisterTask registerTask = null;
@@ -84,17 +87,34 @@ public class RegisterActivity extends AppCompatActivity {
         String email = emailView.getText().toString();
         String password = passwordView.getText().toString();
 
-        if (false) {
-
+        if (!name.matches("[a-zA-Z]+$") || name.isEmpty()) {
+            nameView.setError(getString(R.string.error_invalid_name));
+            nameView.requestFocus();
+        } else if(!forename.matches("[a-zA-Z]+$") || forename.isEmpty()){
+            forenameView.setError(getString(R.string.error_invalid_name));
+            forenameView.requestFocus();
+        } else if(!username.matches("[a-zA-Z0-9]+$") || username.isEmpty()){
+            usernameView.setError(getString(R.string.error_invalid_name));
+            usernameView.requestFocus();
+        } else if(!isValidEmailAddress(email) || email.isEmpty()){
+            emailView.setError(getString(R.string.error_invalid_email));
+            emailView.requestFocus();
+        } else if(password.length() < 6){
+            passwordView.setError(getString(R.string.error_invalid_password));
+            passwordView.requestFocus();
         } else {
-            System.out.println("ELSE");
             //showProgress(true);
             registerTask = new UserRegisterTask(username, name, forename, email, password);
             registerTask.execute((Void) null);
         }
     }
 
-    //CHECK STUFF
+    public static boolean isValidEmailAddress(String email) {
+        String regex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(email);
+        return  matcher.matches();
+    }
 
 
     public class UserRegisterTask extends AsyncTask<Void, Void, Boolean> {
@@ -117,7 +137,7 @@ public class RegisterActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Void... params) {
 
-            System.out.println("BG");
+            boolean sucess;
 
             User user = new User(username,email,password,name,forename, 0);
 
@@ -132,9 +152,11 @@ public class RegisterActivity extends AppCompatActivity {
                 System.out.println(user.toString());
                 accountDao.create(user);
                 System.out.println("\n\nIt seems to have worked\n\n");
+                sucess = true;
             } catch (Exception e) {
                 System.out.println(e);
                 e.printStackTrace();
+                sucess = false;
             }
             finally {
                 // destroy the data source which should close underlying connections
@@ -147,16 +169,8 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 }
             }
-            /*
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }*/
 
-            return true; //CHANGE
+            return sucess;
         }
 
         @Override
