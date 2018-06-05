@@ -180,7 +180,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             if (success) {
                 finish();
-                Intent myIntent = new Intent(RegisterActivity.this, MainActivity.class);
+                Intent myIntent = new Intent(RegisterActivity.this, Main2Activity.class);
                 RegisterActivity.this.startActivity(myIntent);
             } else {
                 emailView.setError(getString(R.string.error_alreadyInUse_email));
