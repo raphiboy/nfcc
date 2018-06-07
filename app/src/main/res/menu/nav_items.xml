@@ -7,18 +7,18 @@
         <item
             android:id="@+id/nav_1"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Test1" />
+            android:title="Home" />
         <item
             android:id="@+id/nav_2"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Test2" />
+            android:title="Geld senden" />
         <item
             android:id="@+id/nav_3"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Test3" />
+            android:title="Geld aufladen" />
         <item
             android:id="@+id/nav_4"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Test4" />
+            android:title="Kontoübersicht" />
     </group>
 </menu>

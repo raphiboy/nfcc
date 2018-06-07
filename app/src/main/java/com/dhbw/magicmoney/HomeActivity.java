@@ -14,13 +14,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class Main2Activity extends AppCompatActivity
+public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Max Mustermann");
@@ -57,7 +57,7 @@ public class Main2Activity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main2, menu);
+        getMenuInflater().inflate(R.menu.settings, menu);
         return true;
     }
 
@@ -83,15 +83,17 @@ public class Main2Activity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_1) {
-            Intent myIntent = new Intent(Main2Activity.this,Main2Activity.class);
-            Main2Activity.this.startActivity(myIntent);
+            Intent myIntent = new Intent(HomeActivity.this,HomeActivity.class);
+            HomeActivity.this.startActivity(myIntent);
         } else if (id == R.id.nav_2) {
-            Intent myIntent = new Intent(Main2Activity.this,Activity2.class);
-            Main2Activity.this.startActivity(myIntent);
+            Intent myIntent = new Intent(HomeActivity.this,TransferActivity1.class);
+            HomeActivity.this.startActivity(myIntent);
         } else if (id == R.id.nav_3) {
-
+            Intent myIntent = new Intent(HomeActivity.this,ChargeActivity.class);
+            HomeActivity.this.startActivity(myIntent);
         } else if (id == R.id.nav_4) {
-
+            Intent myIntent = new Intent(HomeActivity.this,AccountActivity.class);
+            HomeActivity.this.startActivity(myIntent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

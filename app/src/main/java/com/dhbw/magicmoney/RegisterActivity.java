@@ -3,7 +3,6 @@ package com.dhbw.magicmoney;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -180,7 +179,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             if (success) {
                 finish();
-                Intent myIntent = new Intent(RegisterActivity.this, Main2Activity.class);
+                Intent myIntent = new Intent(RegisterActivity.this, HomeActivity.class);
                 RegisterActivity.this.startActivity(myIntent);
             } else {
                 emailView.setError(getString(R.string.error_alreadyInUse_email));
