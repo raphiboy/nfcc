@@ -43,6 +43,10 @@
         <activity
             android:name=".AccountActivity"
             android:label="@string/title_activity_account"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".TransferActivity2"
+            android:label="@string/title_activity_transfer2"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

@@ -1,5 +1,6 @@
 package com.dhbw.magicmoney;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -8,6 +9,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 public class TransferActivity1 extends HomeActivity {
 
@@ -37,6 +40,17 @@ public class TransferActivity1 extends HomeActivity {
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        final EditText transferValueNumber = (EditText) findViewById(R.id.transfer1_value);
+        Button confirmButton = (Button) findViewById(R.id.transfer1_button);
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent myIntent = new Intent(TransferActivity1.this, TransferActivity2.class);
+                myIntent.putExtra("transferValue", transferValueNumber.getText().toString());
+                TransferActivity1.this.startActivity(myIntent);
+            }
+        });
     }
 
 }
