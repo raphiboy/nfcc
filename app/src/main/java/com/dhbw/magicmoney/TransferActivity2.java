@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class TransferActivity2 extends AppCompatActivity {
+    String transferValue ="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,18 +34,30 @@ public class TransferActivity2 extends AppCompatActivity {
         Bundle bundle = intent.getExtras();
         if(bundle != null)
         {
-            String transferValue = (String) bundle.get("transferValue");
+            transferValue = (String) bundle.get("transferValue");
             transferValueNumberDisplay.setText(transferValue);
         }
 
-        Button confirmButton = (Button) findViewById(R.id.transfer2_button_back);
-        confirmButton.setOnClickListener(new View.OnClickListener() {
+        Button confirmButton = findViewById(R.id.transfer2_button_confirm);
+        confirmButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Intent myIntent = new Intent(TransferActivity2.this, TransferActivity3.class);
+                myIntent.putExtra("transferValue", transferValue);
+                TransferActivity2.this.startActivity(myIntent);
+            }
+        });
+
+        Button backButton = findViewById(R.id.transfer2_button_back);
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent myIntent = new Intent(TransferActivity2.this, TransferActivity1.class);
                 TransferActivity2.this.startActivity(myIntent);
             }
         });
+
+
     }
 
 }

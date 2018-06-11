@@ -8,6 +8,19 @@
     tools:context=".TransferActivity1"
     tools:showIn="@layout/app_bar_transfer1">
 
+    <TextView
+        android:id="@+id/transfer1_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Geld senden"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.308" />
+
     <Button
         android:id="@+id/transfer1_button"
         android:layout_width="wrap_content"
@@ -36,5 +49,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
 
 </android.support.constraint.ConstraintLayout>
