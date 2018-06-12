@@ -49,7 +49,8 @@
             android:name=".TransferActivity2"
             android:label="@string/title_activity_transfer2"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".TransferActivity3"></activity>
+        <activity android:name=".TransferActivity3" />
+        <activity android:name=".TransactionFeedbackActivity"></activity>
     </application>
 
 </manifest>
