@@ -68,6 +68,7 @@ public class TransferActivity3 extends AppCompatActivity implements NfcAdapter.O
     public void onNdefPushComplete(NfcEvent event) {
         //This is called when the system detects that our NdefMessage was successfully sent
         //TODO: continue to new Activity
+        Toast.makeText(this, "NFC signal sent!", Toast.LENGTH_SHORT);
     }
 
     @Override

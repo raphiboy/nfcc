@@ -50,7 +50,8 @@
             android:label="@string/title_activity_transfer2"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".TransferActivity3" />
-        <activity android:name=".TransactionFeedbackActivity"></activity>
+        <activity android:name=".TransactionFeedbackActivity" />
+        <activity android:name=".TagReceivedActivity"></activity>
     </application>
 
 </manifest>
