@@ -303,6 +303,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
+        private User user;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
@@ -313,8 +314,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected Boolean doInBackground(Void... params) {
 
             boolean sucess;
-
-            User user;
 
             ConnectionSource connectionSource = null;
             try {
@@ -360,6 +359,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             if (success) {
                 finish();
                 Intent myIntent = new Intent(LoginActivity.this,HomeActivity.class);
+                myIntent.putExtra("id", user.getID());
+                myIntent.putExtra("username", user.getUsername());
+                myIntent.putExtra("email", user.getEmail());
+                myIntent.putExtra("password", user.getPassword());
+                myIntent.putExtra("name", user.getName());
+                myIntent.putExtra("forename", user.getForename());
+                myIntent.putExtra("balance", user.getBalance());
                 LoginActivity.this.startActivity(myIntent);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

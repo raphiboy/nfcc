@@ -123,6 +123,7 @@ public class RegisterActivity extends AppCompatActivity {
         private final String forename;
         private final String email;
         private final String password;
+        private User user;
 
         UserRegisterTask(String username, String name, String forename, String email, String password) {
             this.username = username;
@@ -138,7 +139,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             boolean sucess;
 
-            User user = new User(username,email,password,name,forename, 0);
+            user = new User(username,email,password,name,forename, 0);
 
             ConnectionSource connectionSource = null;
             try {
@@ -180,6 +181,13 @@ public class RegisterActivity extends AppCompatActivity {
             if (success) {
                 finish();
                 Intent myIntent = new Intent(RegisterActivity.this, HomeActivity.class);
+                myIntent.putExtra("id", user.getID());
+                myIntent.putExtra("username", user.getUsername());
+                myIntent.putExtra("email", user.getEmail());
+                myIntent.putExtra("password", user.getPassword());
+                myIntent.putExtra("name", user.getName());
+                myIntent.putExtra("forename", user.getForename());
+                myIntent.putExtra("balance", user.getBalance());
                 RegisterActivity.this.startActivity(myIntent);
             } else {
                 emailView.setError(getString(R.string.error_alreadyInUse_email));
