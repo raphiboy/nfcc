@@ -11,8 +11,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
-public class TransferActivity1 extends HomeActivity {
+public class TransferActivity1 extends NavigationActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,12 @@ public class TransferActivity1 extends HomeActivity {
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View hView =  navigationView.getHeaderView(0);
+        TextView navHeaderName = (TextView)hView.findViewById(R.id.nav_header_name);
+        TextView navHeaderEmail = (TextView)hView.findViewById(R.id.nav_header_email);
+        navHeaderName.setText(HomeActivity.user.getUsername());
+        navHeaderEmail.setText(HomeActivity.user.getEmail());
 
         final EditText transferValueNumber = (EditText) findViewById(R.id.transfer1_value);
         Button confirmButton = (Button) findViewById(R.id.transfer1_button);

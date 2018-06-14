@@ -16,10 +16,10 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class HomeActivity extends AppCompatActivity
+public class HomeActivity extends NavigationActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private User user;
+    public static User user;
 
 
     @Override
@@ -28,7 +28,6 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Max Mustermann");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -54,64 +53,16 @@ public class HomeActivity extends AppCompatActivity
         {
            user = new User((String) bundle.get("username"),(String) bundle.get("email"),(String) bundle.get("password"),(String) bundle.get("name"),(String) bundle.get("forename"),(double) bundle.get("balance"));
         }
+
         TextView balanceView = (TextView) findViewById(R.id.home_balance_view);
         balanceView.setText(Double.toString(user.getBalance()));
-    }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
+        getSupportActionBar().setTitle(user.getForename() + " " + user.getName());
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.settings, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_1) {
-            Intent myIntent = new Intent(HomeActivity.this,HomeActivity.class);
-            HomeActivity.this.startActivity(myIntent);
-        } else if (id == R.id.nav_2) {
-            Intent myIntent = new Intent(HomeActivity.this,TransferActivity1.class);
-            HomeActivity.this.startActivity(myIntent);
-        } else if (id == R.id.nav_3) {
-            Intent myIntent = new Intent(HomeActivity.this,ChargeActivity.class);
-            HomeActivity.this.startActivity(myIntent);
-        } else if (id == R.id.nav_4) {
-            Intent myIntent = new Intent(HomeActivity.this,AccountActivity.class);
-            HomeActivity.this.startActivity(myIntent);
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+        View hView =  navigationView.getHeaderView(0);
+        TextView navHeaderName = (TextView)hView.findViewById(R.id.nav_header_name);
+        TextView navHeaderEmail = (TextView)hView.findViewById(R.id.nav_header_email);
+        navHeaderName.setText(HomeActivity.user.getUsername());
+        navHeaderEmail.setText(HomeActivity.user.getEmail());
     }
 }
