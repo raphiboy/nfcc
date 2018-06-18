@@ -16,6 +16,9 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
+import java.util.Currency;
+
 public class HomeActivity extends NavigationActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -28,15 +31,6 @@ public class HomeActivity extends NavigationActivity
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -55,7 +49,11 @@ public class HomeActivity extends NavigationActivity
         }
 
         TextView balanceView = (TextView) findViewById(R.id.home_balance_view);
-        balanceView.setText(Double.toString(user.getBalance()));
+        Currency c = Currency.getInstance("EUR");
+        DecimalFormat decimalFormat = new DecimalFormat("0,00 €");
+        decimalFormat.setCurrency(c);
+
+        balanceView.setText(decimalFormat.format(user.getBalance()));
 
         getSupportActionBar().setTitle(user.getForename() + " " + user.getName());
 
