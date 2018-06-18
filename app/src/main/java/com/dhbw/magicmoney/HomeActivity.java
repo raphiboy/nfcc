@@ -53,7 +53,7 @@ public class HomeActivity extends NavigationActivity
             user.setName((String) bundle.get("name"));
            //user = new User((String) bundle.get("username"),(String) bundle.get("email"),(String) bundle.get("password"),(String) bundle.get("name"),(String) bundle.get("forename"),(double) bundle.get("balance"));
         }
-
+        //test
         TextView balanceView = (TextView) findViewById(R.id.home_balance_view);
 
         balanceView.setText(user.getEURBalance());
