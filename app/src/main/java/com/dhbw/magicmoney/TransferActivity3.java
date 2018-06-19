@@ -6,6 +6,7 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -20,6 +21,8 @@ public class TransferActivity3 extends AppCompatActivity implements NfcAdapter.O
     TextView tvShowCode = null;
 
     private NfcAdapter mNfcAdapter;
+    private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private String transactionID ="";
 
     private ArrayList<String> dataToSendArray = new ArrayList<>();
 
@@ -30,6 +33,8 @@ public class TransferActivity3 extends AppCompatActivity implements NfcAdapter.O
         setContentView(R.layout.activity_transfer3);
 
         tvShowCode = findViewById(R.id.transfer3_showCode);
+
+        transactionID = createTransactionID();
 
         //Generate a 4-Digit-Code
         Random random = new Random();
@@ -46,8 +51,8 @@ public class TransferActivity3 extends AppCompatActivity implements NfcAdapter.O
 
         dataToSendArray.add(transferValue);
         dataToSendArray.add(generatedCode);
-
-        //TODO: add sender name, transaction ID
+        dataToSendArray.add(HomeActivity.user.getForename() + " " + HomeActivity.user.getName());
+        dataToSendArray.add(transactionID);
 
         //Check if NFC is available on device
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -59,16 +64,26 @@ public class TransferActivity3 extends AppCompatActivity implements NfcAdapter.O
             //This will be called if the message is sent successfully
             mNfcAdapter.setOnNdefPushCompleteCallback(this, this);
         }        else {
-            Toast.makeText(this, "NFC not available on this device",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "NFC not available on this device", Toast.LENGTH_LONG).show();
         }
+    }
+
+    @NonNull
+    private String createTransactionID() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i <= 5; i++) {
+            int character = (int)(Math.random()*ALPHA_NUMERIC_STRING.length());
+            builder.append(ALPHA_NUMERIC_STRING.charAt(character));
+        }
+
+        return builder.toString();
     }
 
     @Override
     public void onNdefPushComplete(NfcEvent event) {
         //This is called when the system detects that our NdefMessage was successfully sent
         //TODO: continue to new Activity
-        Toast.makeText(this, "NFC signal sent!", Toast.LENGTH_SHORT);
+        Toast.makeText(this, "NFC signal sent!", Toast.LENGTH_LONG);
     }
 
     @Override
@@ -86,6 +101,7 @@ public class TransferActivity3 extends AppCompatActivity implements NfcAdapter.O
 
     public NdefRecord[] createRecords(){
         NdefRecord[] records = new NdefRecord[dataToSendArray.size() + 1];
+
 
         //To Create Messages Manually if API is less than
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
