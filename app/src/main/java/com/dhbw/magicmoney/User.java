@@ -1,12 +1,18 @@
 package com.dhbw.magicmoney;
 
+import android.app.Application;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Currency;
+import java.util.Locale;
 
 @DatabaseTable(tableName = "db_user")
-public class User implements Serializable {
+public class User extends Application implements Serializable {
 
     @DatabaseField(columnName = "ID", generatedId = true)
     private int ID;
@@ -31,6 +37,8 @@ public class User implements Serializable {
 
 
     public User(){
+
+
 
     }
 
@@ -115,4 +123,10 @@ public class User implements Serializable {
                 ", balance=" + balance +
                 '}';
     }
+
+    public String getEURBalance(){
+        return NumberFormat.getCurrencyInstance(Locale.GERMANY).format((this.getBalance()));
+    }
+
+
 }

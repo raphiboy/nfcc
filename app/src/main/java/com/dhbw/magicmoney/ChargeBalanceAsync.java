@@ -52,6 +52,7 @@ public class ChargeBalanceAsync extends AsyncTask<Integer, Integer, Boolean> {
                     e.printStackTrace();
                 }
             }
+
         }
         return sucess;
     }
@@ -61,7 +62,7 @@ public class ChargeBalanceAsync extends AsyncTask<Integer, Integer, Boolean> {
         if(success){
             HomeActivity.user.riseBalance(amount);
             TextView balanceView = (TextView) mContext.findViewById(R.id.charge_balance_view);
-            balanceView.setText(Double.toString(HomeActivity.user.getBalance()));
+            balanceView.setText(HomeActivity.user.getEURBalance());
         }
     }
 

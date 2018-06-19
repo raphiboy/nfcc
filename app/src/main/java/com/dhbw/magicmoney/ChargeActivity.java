@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ChargeActivity extends NavigationActivity {
 
+    private User u;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,16 +26,7 @@ public class ChargeActivity extends NavigationActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //getSupportActionBar().setTitle("Max Mustermann");
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        getSupportActionBar().setTitle("Geld aufladen");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -45,39 +37,43 @@ public class ChargeActivity extends NavigationActivity {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        u = (User) getApplication();
+
+        final TextView balanceView = (TextView) findViewById(R.id.charge_balance_view);
+        balanceView.setText(u.getEURBalance());
+
         Button fiveButton = (Button) findViewById(R.id.charge_charge5_button);
         Button tenButton = (Button) findViewById(R.id.charge_charge10_button);
         Button twentyButton = (Button) findViewById(R.id.charge_charge20_button);
         Button fiftyButton = (Button) findViewById(R.id.charge_charge50_button);
 
-        TextView balanceView = (TextView) findViewById(R.id.charge_balance_view);
-        balanceView.setText(Double.toString(HomeActivity.user.getBalance()));
-
         final Activity cont=this;
-
-
         fiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 new ChargeBalanceAsync(cont).execute(5);
+                balanceView.setText(u.getEURBalance());
             }
         });
         tenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 new ChargeBalanceAsync(cont).execute(10);
+                balanceView.setText(u.getEURBalance());
             }
         });
         twentyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 new ChargeBalanceAsync(cont).execute(20);
+                balanceView.setText(u.getEURBalance());
             }
         });
         fiftyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 new ChargeBalanceAsync(cont).execute(50);
+                balanceView.setText(u.getEURBalance());
             }
         });
 
