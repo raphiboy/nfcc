@@ -99,6 +99,10 @@ public class User implements Serializable {
         this.balance = balance;
     }
 
+    public void riseBalance(double amount) {
+        this.balance = this.balance+amount;
+    }
+
     @Override
     public String toString() {
         return "User{" +
