@@ -5,10 +5,16 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.nio.charset.Charset;
@@ -19,9 +25,17 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
     private ArrayList<String> dataToSendArray = new ArrayList<>();
     private ArrayList<String> dataReceivedArray = new ArrayList<>();
 
+    private String insertedCode = null;
+
+    private String transferValue = null;
+    private String code = null;
+    private String name = null;
+    private String transactionID = null;
+
     private NfcAdapter mNfcAdapter;
-
-
+    TextView tvShowText = null;
+    Button btnConfirmCode = null;
+    EditText etCode = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +43,33 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
         setContentView(R.layout.activity_tag_received);
 
         handleNfcIntent(getIntent());
+
+        tvShowText = findViewById(R.id.tagReceived_textView);
+        etCode = findViewById(R.id.tagReceived_code);
+
+        btnConfirmCode = (Button) findViewById(R.id.btnConfirmCode);
+        btnConfirmCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                insertedCode = etCode.getText().toString();
+
+
+                Log.d("Code to put in", code);
+                Log.d("Inserted Code", insertedCode);
+
+                if (insertedCode.equals(code)){
+                    Log.d("Code", "confirmed");
+
+
+                }
+                else{
+                    Log.d("Code","wrong");
+
+                }
+            }
+        });
+        tvShowText.setText(name + " möchte dir " + transferValue + "€ schicken. Um dies zu bestätigen trage in das Feld den vierstelligen Code ein, welcher auf " + name + "s Gerät angezeigt wird.");
+
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
@@ -107,8 +148,12 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
                     if (string.equals(getPackageName())) { continue; }
                     dataReceivedArray.add(string);
                 }
-                Toast.makeText(this, "Received " + dataReceivedArray.size() +
-                        " Data parts", Toast.LENGTH_LONG).show();
+
+                transferValue = dataReceivedArray.get(0);
+                code = dataReceivedArray.get(1);
+                name = dataReceivedArray.get(2);
+                transactionID = dataReceivedArray.get(3);
+
             }
             else {
                 Toast.makeText(this, "Received Blank Parcel", Toast.LENGTH_LONG).show();

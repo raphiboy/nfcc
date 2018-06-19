@@ -1,6 +1,9 @@
 package com.dhbw.magicmoney;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.TextView;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -10,7 +13,13 @@ import com.j256.ormlite.support.ConnectionSource;
 
 public class ChargeBalanceAsync extends AsyncTask<Integer, Integer, Boolean> {
 
-    int amount;
+    private Activity  mContext;
+
+    private int amount;
+
+    public ChargeBalanceAsync(Activity context){
+        this.mContext=context;
+    }
 
     @Override
     protected Boolean doInBackground(Integer... amount) {
@@ -51,6 +60,8 @@ public class ChargeBalanceAsync extends AsyncTask<Integer, Integer, Boolean> {
     protected void onPostExecute(final Boolean success) {
         if(success){
             HomeActivity.user.riseBalance(amount);
+            TextView balanceView = (TextView) mContext.findViewById(R.id.charge_balance_view);
+            balanceView.setText(Double.toString(HomeActivity.user.getBalance()));
         }
     }
 

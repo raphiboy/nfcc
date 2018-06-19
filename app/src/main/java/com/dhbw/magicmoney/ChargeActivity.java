@@ -1,5 +1,6 @@
 package com.dhbw.magicmoney;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -44,40 +45,39 @@ public class ChargeActivity extends NavigationActivity {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        final TextView balanceView = (TextView) findViewById(R.id.charge_balance_view);
-        balanceView.setText(Double.toString(HomeActivity.user.getBalance()));
-
         Button fiveButton = (Button) findViewById(R.id.charge_charge5_button);
         Button tenButton = (Button) findViewById(R.id.charge_charge10_button);
         Button twentyButton = (Button) findViewById(R.id.charge_charge20_button);
         Button fiftyButton = (Button) findViewById(R.id.charge_charge50_button);
 
+        TextView balanceView = (TextView) findViewById(R.id.charge_balance_view);
+        balanceView.setText(Double.toString(HomeActivity.user.getBalance()));
+
+        final Activity cont=this;
+
+
         fiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new ChargeBalanceAsync().execute(5);
-                balanceView.setText(Double.toString(HomeActivity.user.getBalance())); // TODO Geht nicht wegen async
+                new ChargeBalanceAsync(cont).execute(5);
             }
         });
         tenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new ChargeBalanceAsync().execute(10);
-                balanceView.setText(Double.toString(HomeActivity.user.getBalance()));
+                new ChargeBalanceAsync(cont).execute(10);
             }
         });
         twentyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new ChargeBalanceAsync().execute(20);
-                balanceView.setText(Double.toString(HomeActivity.user.getBalance()));
+                new ChargeBalanceAsync(cont).execute(20);
             }
         });
         fiftyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new ChargeBalanceAsync().execute(50);
-                balanceView.setText(Double.toString(HomeActivity.user.getBalance()));
+                new ChargeBalanceAsync(cont).execute(50);
             }
         });
 
