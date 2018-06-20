@@ -60,6 +60,10 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
                 if (insertedCode.equals(code)){
                     Log.d("Code", "confirmed");
 
+                    //TODO: Insert into Database
+
+                    Intent myIntent = new Intent(TagReceivedActivity.this, TransactionFeedbackActivity.class);
+                    TagReceivedActivity.this.startActivity(myIntent);
 
                 }
                 else{

@@ -13,16 +13,17 @@
         android:text="Transaktion erfolgreich!"
         android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/imageView3"
+        app:layout_constraintBottom_toTopOf="@+id/ivContinue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/ivContinue"
         android:layout_width="95dp"
         android:layout_height="83dp"
+        android:clickable="true"
         android:tint="@android:color/holo_green_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
