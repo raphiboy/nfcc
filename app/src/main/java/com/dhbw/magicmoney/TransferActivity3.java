@@ -9,6 +9,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import java.util.Random;
 public class TransferActivity3 extends AppCompatActivity implements NfcAdapter.OnNdefPushCompleteCallback, NfcAdapter.CreateNdefMessageCallback {
     String transferValue ="";
     TextView tvShowCode = null;
+    TextView tvNfcSignalSent = null;
 
     private NfcAdapter mNfcAdapter;
     private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -33,6 +35,7 @@ public class TransferActivity3 extends AppCompatActivity implements NfcAdapter.O
         setContentView(R.layout.activity_transfer3);
 
         tvShowCode = findViewById(R.id.transfer3_showCode);
+        tvNfcSignalSent = findViewById(R.id.tvNfcSignalSent);
 
         transactionID = createTransactionID();
 
@@ -82,8 +85,16 @@ public class TransferActivity3 extends AppCompatActivity implements NfcAdapter.O
     @Override
     public void onNdefPushComplete(NfcEvent event) {
         //This is called when the system detects that our NdefMessage was successfully sent
-        //TODO: continue to new Activity
-        Toast.makeText(this, "NFC signal sent!", Toast.LENGTH_LONG);
+
+        Log.d("PushComplete", "reached");
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tvNfcSignalSent.setText("NFC Nachricht gesendet. Überprüfen Sie die erfolgreiche Transaktion bei dem Empfänger.");
+            }
+        });
+
     }
 
     @Override

@@ -17,6 +17,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.stmt.UpdateBuilder;
+import com.j256.ormlite.support.ConnectionSource;
+
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
@@ -61,6 +67,7 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
                     Log.d("Code", "confirmed");
 
                     //TODO: Insert into Database
+                    //writeTransactionIntoDB(transactionID, HomeActivity.user.getID(), "Sender_KundenID", transferValue);
 
                     Intent myIntent = new Intent(TagReceivedActivity.this, TransactionFeedbackActivity.class);
                     TagReceivedActivity.this.startActivity(myIntent);
@@ -72,7 +79,7 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
                 }
             }
         });
-        tvShowText.setText(name + " möchte dir " + transferValue + "€ schicken. Um dies zu bestätigen trage in das Feld den vierstelligen Code ein, welcher auf " + name + "s Gerät angezeigt wird.");
+        tvShowText.setText(name + " möchte dir " + transferValue + " schicken. Um dies zu bestätigen trage in das Feld den vierstelligen Code ein, welcher auf " + name + "s Gerät angezeigt wird.");
 
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -83,6 +90,32 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
         else {
             Toast.makeText(this, "NFC not available on this device",
                     Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void writeTransactionIntoDB(String transactionID, int Empfänger_KundenID, String Sender_KundenID, String transferValue){
+
+        ConnectionSource connectionSource = null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            connectionSource = new JdbcConnectionSource("jdbc:mysql://den1.mysql2.gear.host:3306/magicmoney?autoReconnect=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "magicmoney", "magic!");
+            Dao<User, Integer> accountDao = DaoManager.createDao(connectionSource, User.class);
+            //TODO insert into TransactionsTable
+
+        } catch (Exception e) {
+            System.out.println(e);
+            e.printStackTrace();
+        }finally {
+            // destroy the data source which should close underlying connections
+            if (connectionSource != null) {
+                try {
+                    connectionSource.close();
+                } catch (Exception e){
+                    System.out.println(e);
+                    e.printStackTrace();
+                }
+            }
+
         }
     }
 
