@@ -6,6 +6,7 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.nfc.Tag;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +31,8 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
 
     private ArrayList<String> dataToSendArray = new ArrayList<>();
     private ArrayList<String> dataReceivedArray = new ArrayList<>();
+
+    private WriteTransactionTask writeTransactionTask = null;
 
     private String insertedCode = null;
 
@@ -67,7 +70,6 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
                     Log.d("Code", "confirmed");
 
                     //TODO: Insert into Database
-                    //writeTransactionIntoDB(transactionID, HomeActivity.user.getID(), "Sender_KundenID", transferValue);
 
                     Intent myIntent = new Intent(TagReceivedActivity.this, TransactionFeedbackActivity.class);
                     TagReceivedActivity.this.startActivity(myIntent);
@@ -93,30 +95,13 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
         }
     }
 
-    private void writeTransactionIntoDB(String transactionID, int Empfänger_KundenID, String Sender_KundenID, String transferValue){
-
-        ConnectionSource connectionSource = null;
-        try {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-            connectionSource = new JdbcConnectionSource("jdbc:mysql://den1.mysql2.gear.host:3306/magicmoney?autoReconnect=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "magicmoney", "magic!");
-            Dao<User, Integer> accountDao = DaoManager.createDao(connectionSource, User.class);
-            //TODO insert into TransactionsTable
-
-        } catch (Exception e) {
-            System.out.println(e);
-            e.printStackTrace();
-        }finally {
-            // destroy the data source which should close underlying connections
-            if (connectionSource != null) {
-                try {
-                    connectionSource.close();
-                } catch (Exception e){
-                    System.out.println(e);
-                    e.printStackTrace();
-                }
-            }
-
+    private void attemptTransaction(){
+        if(writeTransactionTask != null) {
+            return;
         }
+
+        writeTransactionTask = new WriteTransactionTask(transactionID, "receiverID", "senderID", transferValue);
+        writeTransactionTask.execute((Void) null);
     }
 
     @Override
@@ -207,5 +192,82 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
     @Override
     public void onNewIntent(Intent intent) {
         handleNfcIntent(intent);
+    }
+
+    public class WriteTransactionTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String transactionID ;
+        private final String ReceiverID;
+        private final String SenderID;
+        private final String TransferValue;
+        private NewTransaction newTransaction;
+
+        WriteTransactionTask(String transactionID, String receiverID, String senderID, String transferValue) {
+            this.transactionID = transactionID;
+            ReceiverID = receiverID;
+            SenderID = senderID;
+            TransferValue = transferValue;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            boolean success;
+
+            newTransaction = new NewTransaction(transactionID, ReceiverID, SenderID, TransferValue);
+
+            ConnectionSource connectionSource = null;
+            try {
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+
+                // create our data-source for the database
+                connectionSource = new JdbcConnectionSource("jdbc:mysql://den1.mysql2.gear.host:3306/magicmoney?autoReconnect=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "magicmoney", "magic!");
+
+                // setup our database and DAOs
+                Dao<NewTransaction, Integer> accountDao = DaoManager.createDao(connectionSource, NewTransaction.class);
+
+                // read and write some data
+                accountDao.create(newTransaction);
+
+                success = true;
+
+            } catch (Exception e) {
+
+                System.out.println(e);
+                e.printStackTrace();
+                success = false;
+
+            }
+
+            finally {
+                // destroy the data source which should close underlying connections
+                if (connectionSource != null) {
+                    try {
+                        connectionSource.close();
+                    } catch (Exception e){
+                        System.out.println(e);
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return success;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            writeTransactionTask = null;
+
+            if(success){
+                finish();
+                Log.d("DB", "Inserted in Database");
+            } else{
+                Log.d("DB", "Something went wrong");
+            }
+        }
+
+        @Override
+        protected void onCancelled(){
+            writeTransactionTask = null;
+        }
     }
 }
