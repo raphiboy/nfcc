@@ -1,5 +1,6 @@
 package com.dhbw.magicmoney;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -46,12 +47,18 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
     Button btnConfirmCode = null;
     EditText etCode = null;
 
+    private User u;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tag_received);
 
         handleNfcIntent(getIntent());
+
+        u = (User) getApplication();
+
+        final Activity cont = this;
 
         tvShowText = findViewById(R.id.tagReceived_textView);
         etCode = findViewById(R.id.tagReceived_code);
@@ -69,7 +76,8 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
                 if (insertedCode.equals(code)){
                     Log.d("Code", "confirmed");
 
-                    //TODO: Insert into Database
+                    attemptTransaction(cont);
+
 
                     Intent myIntent = new Intent(TagReceivedActivity.this, TransactionFeedbackActivity.class);
                     TagReceivedActivity.this.startActivity(myIntent);
@@ -95,13 +103,17 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
         }
     }
 
-    private void attemptTransaction(){
-        if(writeTransactionTask != null) {
-            return;
-        }
+    private void attemptTransaction(Activity cont){
+        //if(writeTransactionTask != null) {
+        //    return;
+        //}
 
-        writeTransactionTask = new WriteTransactionTask(transactionID, "receiverID", "senderID", transferValue);
-        writeTransactionTask.execute((Void) null);
+        //writeTransactionTask = new WriteTransactionTask(transactionID, "receiverID", "senderID", transferValue);
+        //writeTransactionTask.execute((Void) null);
+
+        String toTransferWithoutCurrency = transferValue.substring(0, transferValue.length() -2);
+
+        new ChargeBalanceAsync(cont).execute(Integer.parseInt(toTransferWithoutCurrency));
     }
 
     @Override
