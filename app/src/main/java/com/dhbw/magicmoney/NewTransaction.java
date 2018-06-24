@@ -42,7 +42,7 @@ public class NewTransaction extends Application implements Serializable {
         TransferValue = transferValue;
     }
 
-    @DatabaseField(columnName = "TransaktionsID")
+    @DatabaseField(columnName = "TransaktionsID", generatedId = true)
     private String transactionID;
 
     @DatabaseField(columnName = "EmpfängerKundenID")
