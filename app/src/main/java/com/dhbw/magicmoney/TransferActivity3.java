@@ -58,6 +58,7 @@ public class TransferActivity3 extends AppCompatActivity implements NfcAdapter.O
         dataToSendArray.add(generatedCode);
         dataToSendArray.add(HomeActivity.user.getForename() + " " + HomeActivity.user.getName());
         dataToSendArray.add(transactionID);
+        dataToSendArray.add(Integer.toString(HomeActivity.user.getID()));
 
         //Check if NFC is available on device
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);

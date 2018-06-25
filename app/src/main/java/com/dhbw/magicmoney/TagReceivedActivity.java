@@ -22,13 +22,14 @@ import android.widget.Toast;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
-import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter.OnNdefPushCompleteCallback, NfcAdapter.CreateNdefMessageCallback {
+
+    private TransactionTask transactionTask = null;
 
     private ArrayList<String> dataToSendArray = new ArrayList<>();
     private ArrayList<String> dataReceivedArray = new ArrayList<>();
@@ -39,6 +40,7 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
     private String code = null;
     private String name = null;
     private String transactionID = null;
+    private int senderID;
 
     private NfcAdapter mNfcAdapter;
     TextView tvShowText = null;
@@ -56,8 +58,6 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
 
         u = (User) getApplication();
 
-        final Activity cont = this;
-
         tvShowText = findViewById(R.id.tagReceived_textView);
         etCode = findViewById(R.id.tagReceived_code);
 
@@ -74,7 +74,7 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
                 if (insertedCode.equals(code)){
                     Log.d("Code", "confirmed");
 
-                    attemptTransaction(cont);
+                    attemptTransaction();
 
 
                     Intent myIntent = new Intent(TagReceivedActivity.this, TransactionFeedbackActivity.class);
@@ -101,7 +101,11 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
         }
     }
 
-    private void attemptTransaction(Activity cont){
+    private void attemptTransaction(){
+
+        if (transactionTask != null) {
+            return;
+        }
 
         //Letzten 2 Stellen abschneiden, um das Euro Zeichen zu entfernen
         String toTransferWithoutCurrency = transferValue.substring(0, transferValue.length() -2);
@@ -110,9 +114,11 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
         toTransferWithoutCurrency = toTransferWithoutCurrency.replace(",", ".");
 
         //String to Int
-        int transferValueInt = Integer.parseInt(toTransferWithoutCurrency);
+        double transferValueInt = Double.parseDouble(toTransferWithoutCurrency);
 
-        new ChargeBalanceAsync(cont).execute(transferValueInt);
+        transactionTask = new TransactionTask(HomeActivity.user.getID(), senderID, transferValueInt);
+        transactionTask.execute((Void) null);
+
     }
 
     @Override
@@ -186,6 +192,7 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
                 code = dataReceivedArray.get(1);
                 name = dataReceivedArray.get(2);
                 transactionID = dataReceivedArray.get(3);
+                senderID = Integer.parseInt(dataReceivedArray.get(4));
 
             }
             else {
@@ -203,5 +210,75 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
     @Override
     public void onNewIntent(Intent intent) {
         handleNfcIntent(intent);
+    }
+
+    public class TransactionTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final int receiverID;
+        private final int senderID;
+        private final double transferValue;
+        private Transaction transaction;
+
+        TransactionTask(int receiverID, int senderID, double transferValue) {
+            this.receiverID = receiverID;
+            this.senderID = senderID;
+            this.transferValue = transferValue;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+
+            boolean success;
+
+            transaction = new Transaction(senderID,receiverID,transferValue);
+
+            ConnectionSource connectionSource = null;
+            try {
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+                // create our data-source for the database
+                connectionSource = new JdbcConnectionSource("jdbc:mysql://den1.mysql2.gear.host:3306/magicmoney?autoReconnect=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "magicmoney", "magic!");
+                // setup our database and DAOs
+                Dao<Transaction, Integer> accountDao = DaoManager.createDao(connectionSource, Transaction.class);
+                // read and write some data
+                //System.out.println(Transaction.toString());
+                accountDao.create(transaction);
+                System.out.println("\n\nIt seems to have worked\n\n");
+                success = true;
+            } catch (Exception e) {
+                System.out.println(e);
+                e.printStackTrace();
+                success = false;
+            }
+            finally {
+                // destroy the data source which should close underlying connections
+                if (connectionSource != null) {
+                    try {
+                        connectionSource.close();
+                    } catch (Exception e){
+                        System.out.println(e);
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return success;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            transactionTask = null;
+            //showProgress(false);
+
+            if (success) {
+                //TODO Success meldung
+            } else {
+                // Was passiert bei fail
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            transactionTask = null;
+        }
     }
 }

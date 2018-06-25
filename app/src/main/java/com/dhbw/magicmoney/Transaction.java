@@ -1,63 +1,66 @@
 package com.dhbw.magicmoney;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Date;
 import java.util.Locale;
 
+@DatabaseTable(tableName = "db_transaktion")
 public class Transaction {
 
-    private String emailSender;
-    private String emailReceiver;
-    private Date date;
+    @DatabaseField(columnName = "TransaktionsID", generatedId = true)
+    private int ID;
+    @DatabaseField(columnName = "SenderKundenID", canBeNull = false)
+    private int senderID;
+    @DatabaseField(columnName = "EmpfängerKundenID", canBeNull = false)
+    private int receiverID;
+    @DatabaseField(columnName = "Betrag", canBeNull = false)
+    private double transferValue;
 
-    public Transaction(String emailSender, String emailReceiver, double volume, Date date) {
-        this.emailSender = emailSender;
-        this.emailReceiver = emailReceiver;
-        this.volume = volume;
-        this.date = date;
+    public Transaction(int senderID, int receiverID, double transferValue) {
+        this.senderID = senderID;
+        this.receiverID = receiverID;
+        this.transferValue = transferValue;
     }
 
-    private double volume;
-
-    public String getEmailSender() {
-        return emailSender;
+    public int getID() {
+        return ID;
     }
 
-    public void setEmailSender(String emailSender) {
-        this.emailSender = emailSender;
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
-    public String getEmailReceiver() {
-        return emailReceiver;
+    public int getSenderID() {
+        return senderID;
     }
 
-    public void setEmailReceiver(String emailReceiver) {
-        this.emailReceiver = emailReceiver;
+    public void setSenderID(int senderID) {
+        this.senderID = senderID;
     }
 
-    public double getVolume() {
-        return volume;
+    public int getReceiverID() {
+        return receiverID;
     }
 
-    public void setVolume(double volume) {
-        this.volume = volume;
+    public void setReceiverID(int receiverID) {
+        this.receiverID = receiverID;
     }
 
-    public String getDate() {
-
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.GERMANY);
-        return dateFormat.format(this.date);
+    public double getTransferValue() {
+        return transferValue;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setTransferValue(double transferValue) {
+        this.transferValue = transferValue;
     }
-
 
 
     public String getEURBalance(){
-        return NumberFormat.getCurrencyInstance(Locale.GERMANY).format((this.getVolume()));
+        return NumberFormat.getCurrencyInstance(Locale.GERMANY).format((this.getTransferValue()));
     }
 
 }
