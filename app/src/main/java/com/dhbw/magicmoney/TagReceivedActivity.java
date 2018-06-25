@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 
 import java.nio.charset.Charset;
@@ -238,10 +239,16 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
                 // create our data-source for the database
                 connectionSource = new JdbcConnectionSource("jdbc:mysql://den1.mysql2.gear.host:3306/magicmoney?autoReconnect=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "magicmoney", "magic!");
                 // setup our database and DAOs
-                Dao<Transaction, Integer> accountDao = DaoManager.createDao(connectionSource, Transaction.class);
+                Dao<Transaction, Integer> transactionDao = DaoManager.createDao(connectionSource, Transaction.class);
+                Dao<User, Integer> userDao = DaoManager.createDao(connectionSource, User.class);
+                UpdateBuilder<User, Integer> updateBuilder = userDao.updateBuilder();
+                //updateBuilder.updateColumnValue("Kontostand", newpass);
+                //updateBuilder.where().eq("email",user.getEmail());
+                //updateBuilder.update();
+                //TODO SHI1
                 // read and write some data
                 //System.out.println(Transaction.toString());
-                accountDao.create(transaction);
+                transactionDao.create(transaction);
                 System.out.println("\n\nIt seems to have worked\n\n");
                 success = true;
             } catch (Exception e) {
