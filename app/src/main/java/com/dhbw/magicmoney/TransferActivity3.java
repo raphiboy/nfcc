@@ -117,7 +117,7 @@ public class TransferActivity3 extends AppCompatActivity implements NfcAdapter.O
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                tvNfcSignalSent.setText("NFC Nachricht gesendet. Überprüfen Sie die erfolgreiche Transaktion bei dem Empfänger.");
+                tvNfcSignalSent.setText("NFC Nachricht gesendet. Überprüfen Sie den Erfolg der Transaktion bei dem Empfänger.");
             }
         });
 
