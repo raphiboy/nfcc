@@ -31,9 +31,6 @@ public class TransferActivity3 extends AppCompatActivity implements NfcAdapter.O
 
     private ArrayList<String> dataToSendArray = new ArrayList<>();
 
-    private User u;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,8 +40,6 @@ public class TransferActivity3 extends AppCompatActivity implements NfcAdapter.O
         tvNfcSignalSent = findViewById(R.id.tvNfcSignalSent);
 
         transactionID = createTransactionID();
-
-        u = (User) getApplication();
 
         //Generate a 4-Digit-Code
         Random random = new Random();
@@ -104,15 +99,6 @@ public class TransferActivity3 extends AppCompatActivity implements NfcAdapter.O
         //This is called when the system detects that our NdefMessage was successfully sent
 
         Log.d("PushComplete", "reached");
-
-        final Activity cont = this;
-
-        String toTransferWithoutCurrency = transferValue.substring(0, transferValue.length() -2);
-        toTransferWithoutCurrency = toTransferWithoutCurrency.replace(",", ".");
-
-        int transferValueInt = Integer.parseInt(toTransferWithoutCurrency);
-
-        new ChargeBalanceAsync(cont).execute(transferValueInt * -1);
 
         runOnUiThread(new Runnable() {
             @Override

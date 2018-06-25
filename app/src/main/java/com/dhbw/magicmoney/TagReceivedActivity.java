@@ -102,16 +102,17 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
     }
 
     private void attemptTransaction(Activity cont){
-        //if(writeTransactionTask != null) {
-        //    return;
-        //}
 
-        //writeTransactionTask = new WriteTransactionTask(transactionID, "receiverID", "senderID", transferValue);
-        //writeTransactionTask.execute((Void) null);
-
+        //Letzten 2 Stellen abschneiden, um das Euro Zeichen zu entfernen
         String toTransferWithoutCurrency = transferValue.substring(0, transferValue.length() -2);
 
-        new ChargeBalanceAsync(cont).execute(Integer.parseInt(toTransferWithoutCurrency));
+        //Komma mit Punkt ersetzen
+        toTransferWithoutCurrency = toTransferWithoutCurrency.replace(",", ".");
+
+        //String to Int
+        int transferValueInt = Integer.parseInt(toTransferWithoutCurrency);
+
+        new ChargeBalanceAsync(cont).execute(transferValueInt);
     }
 
     @Override
