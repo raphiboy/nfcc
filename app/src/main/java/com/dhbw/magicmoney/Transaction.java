@@ -1,5 +1,6 @@
 package com.dhbw.magicmoney;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -19,6 +20,9 @@ public class Transaction {
     private int receiverID;
     @DatabaseField(columnName = "Betrag", canBeNull = false)
     private double transferValue;
+    @DatabaseField(columnName = "Datum", dataType = DataType.DATE_STRING, format = "yyyy-MM-dd HH:mm:ss",
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    private Date timestamp;
 
     public Transaction(int senderID, int receiverID, double transferValue) {
         this.senderID = senderID;
@@ -58,6 +62,9 @@ public class Transaction {
         this.transferValue = transferValue;
     }
 
+    public Date getTimestamp() {
+        return timestamp;
+    }
 
     public String getEURBalance(){
         return NumberFormat.getCurrencyInstance(Locale.GERMANY).format((this.getTransferValue()));

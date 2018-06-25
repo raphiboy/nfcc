@@ -50,6 +50,9 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
 
     private User u;
 
+    private User u2;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -241,13 +244,15 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
                 // setup our database and DAOs
                 Dao<Transaction, Integer> transactionDao = DaoManager.createDao(connectionSource, Transaction.class);
                 Dao<User, Integer> userDao = DaoManager.createDao(connectionSource, User.class);
+                u = userDao.queryForEq("email",u.getEmail()).get(0);
+                u2 = userDao.queryForEq("ID",senderID).get(0);
                 UpdateBuilder<User, Integer> updateBuilder = userDao.updateBuilder();
-                //updateBuilder.updateColumnValue("Kontostand", newpass);
-                //updateBuilder.where().eq("email",user.getEmail());
-                //updateBuilder.update();
-                //TODO SHI1
-                // read and write some data
-                //System.out.println(Transaction.toString());
+                updateBuilder.updateColumnValue("Kontostand", u.getBalance() + transferValue);
+                updateBuilder.where().eq("email",u.getEmail());
+                updateBuilder.update();
+                updateBuilder.updateColumnValue("Kontostand", u2.getBalance() - transferValue);
+                updateBuilder.where().eq("ID",senderID);
+                updateBuilder.update();
                 transactionDao.create(transaction);
                 System.out.println("\n\nIt seems to have worked\n\n");
                 success = true;
@@ -277,6 +282,7 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
             //showProgress(false);
 
             if (success) {
+                HomeActivity.user.riseBalance(transferValue);
                 //TODO Success meldung
             } else {
                 // Was passiert bei fail

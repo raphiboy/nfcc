@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -79,19 +80,19 @@ public class HomeActivity extends NavigationActivity
     }
 
     private void generateTransactions() {
-        Transaction u = new Transaction("sender","MagicMike@gmail.de",2.5, Calendar.getInstance().getTime());
+        Transaction u = new Transaction(1,2,2.5);
         transactionList.add(u);
 
-        u = new Transaction("sender2","nico@outlook.de",-5.5, Calendar.getInstance().getTime());
+        u = new Transaction(1,2,2.5);
         transactionList.add(u);
 
-        u = new Transaction("sender2","nico@outlook.de",5.5, Calendar.getInstance().getTime());
+        u = new Transaction(1,2,2.5);
         transactionList.add(u);
-        u = new Transaction("sender2","nico@outlook.de",5.5, Calendar.getInstance().getTime());
+        u = new Transaction(1,2,2.5);
         transactionList.add(u);
-        u = new Transaction("sender2","empfänger2@fn.de",5.5, Calendar.getInstance().getTime());
+        u = new Transaction(1,2,2.5);
         transactionList.add(u);
-        u = new Transaction("sender2","empfänger2",5.5, Calendar.getInstance().getTime());
+        u = new Transaction(1,2,2.5);
         transactionList.add(u);
 
 
