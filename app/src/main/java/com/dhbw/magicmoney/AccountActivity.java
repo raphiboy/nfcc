@@ -1,6 +1,7 @@
 package com.dhbw.magicmoney;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -37,7 +38,8 @@ public class AccountActivity extends NavigationActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //getSupportActionBar().setTitle("Max Mustermann");
+        getSupportActionBar().setTitle("Accountinformationen");
+
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
