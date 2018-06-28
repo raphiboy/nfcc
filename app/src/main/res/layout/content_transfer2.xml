@@ -49,6 +49,7 @@
             android:text="Zurück" />
 
         <Button
+            style="@style/BlueButtonStyle"
             android:id="@+id/transfer2_button_confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -57,9 +58,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            android:text="Geld senden"
-            android:textColor="@android:color/white" />
+            android:text="Geld senden" />
     </LinearLayout>
 
 </LinearLayout>

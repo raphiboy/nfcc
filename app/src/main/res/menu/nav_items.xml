@@ -18,7 +18,7 @@
             android:title="Geld aufladen" />
         <item
             android:id="@+id/nav_4"
-            android:icon="@drawable/ic_konto"
-            android:title="Kontoübersicht" />
+            android:icon="@drawable/ic_person"
+            android:title="Accountinformationen" />
     </group>
 </menu>
