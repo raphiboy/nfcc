@@ -117,7 +117,7 @@ public class HomeActivity extends NavigationActivity
 
 
     private void generateTransactions() {
-        //TODO make this shit work
+        //TODO
 
         /*for (Transaction t : transactions) {
             Transaction u = new Transaction(t.senderID, t.receiverID, t.getTransferValue());
