@@ -15,9 +15,9 @@ public class Transaction {
     @DatabaseField(columnName = "TransaktionsID", generatedId = true)
     private int ID;
     @DatabaseField(columnName = "SenderKundenID", canBeNull = false)
-    private int senderID;
+    public int senderID;
     @DatabaseField(columnName = "EmpfängerKundenID", canBeNull = false)
-    private int receiverID;
+    public int receiverID;
     @DatabaseField(columnName = "Betrag", canBeNull = false)
     private double transferValue;
     @DatabaseField(columnName = "Datum", dataType = DataType.DATE_STRING, format = "yyyy-MM-dd HH:mm:ss",
@@ -28,6 +28,10 @@ public class Transaction {
         this.senderID = senderID;
         this.receiverID = receiverID;
         this.transferValue = transferValue;
+    }
+
+    public  Transaction(){
+
     }
 
     public int getID() {

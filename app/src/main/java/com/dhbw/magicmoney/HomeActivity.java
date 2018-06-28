@@ -1,16 +1,28 @@
 package com.dhbw.magicmoney;
 
+import android.accounts.Account;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
+
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.UpdateBuilder;
+import com.j256.ormlite.stmt.Where;
+import com.j256.ormlite.support.ConnectionSource;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -20,10 +32,16 @@ import java.util.List;
 
 public class HomeActivity extends NavigationActivity
         implements NavigationView.OnNavigationItemSelectedListener{
+
+    private GetTransactionsTask getTransactionsTask = null;
+    private GetBalanceTask getBalanceTask = null;
     public static User user;
     private List<Transaction> transactionList = new ArrayList<>();
     private RecyclerView recyclerView;
     private TransactionAdapter mAdapter;
+    private TextView balanceView;
+    List<Transaction> transactions;
+
 
 
     @Override
@@ -42,6 +60,8 @@ public class HomeActivity extends NavigationActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        balanceView = (TextView) findViewById(R.id.home_balance_view);
+
         user = (User) getApplication();
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -52,12 +72,14 @@ public class HomeActivity extends NavigationActivity
             user.setBalance((Double)bundle.get("balance"));
             user.setForename((String)bundle.get("forename"));
             user.setName((String) bundle.get("name"));
-           //user = new User((String) bundle.get("username"),(String) bundle.get("email"),(String) bundle.get("password"),(String) bundle.get("name"),(String) bundle.get("forename"),(double) bundle.get("balance"));
-        }
-        //test
-        TextView balanceView = (TextView) findViewById(R.id.home_balance_view);
+            user.setID(Integer.parseInt(bundle.get("id").toString()));
 
-        balanceView.setText(user.getEURBalance());
+            balanceView.setText(user.getEURBalance());
+
+            getBalanceTask = new GetBalanceTask();
+            getBalanceTask.execute();
+
+        }
 
         getSupportActionBar().setTitle(user.getForename() + " " + user.getName());
 
@@ -76,26 +98,163 @@ public class HomeActivity extends NavigationActivity
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
+
+        getTransactionsTask =  new GetTransactionsTask();
+        getTransactionsTask.execute();
+
         generateTransactions();
+
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        getBalanceTask = new GetBalanceTask();
+        getBalanceTask.execute();
+
+    }
+
+
     private void generateTransactions() {
-        Transaction u = new Transaction(1,2,2.5);
-        transactionList.add(u);
+        //TODO make this shit work
 
-        u = new Transaction(1,2,2.5);
-        transactionList.add(u);
+        /*for (Transaction t : transactions) {
+            Transaction u = new Transaction(t.senderID, t.receiverID, t.getTransferValue());
 
-        u = new Transaction(1,2,2.5);
-        transactionList.add(u);
-        u = new Transaction(1,2,2.5);
-        transactionList.add(u);
-        u = new Transaction(1,2,2.5);
-        transactionList.add(u);
-        u = new Transaction(1,2,2.5);
-        transactionList.add(u);
+            transactionList.add(u);
+        }*/
+
+        //Transaction u = new Transaction(1,2,2.5);
+        //transactionList.add(u);
+
+//        u = new Transaction(1,2,2.5);
+//        transactionList.add(u);
+//
+//        u = new Transaction(1,2,2.5);
+//        transactionList.add(u);
+//        u = new Transaction(1,2,2.5);
+//        transactionList.add(u);
+//        u = new Transaction(1,2,2.5);
+//        transactionList.add(u);
+//        u = new Transaction(1,2,2.5);
+//        transactionList.add(u);
 
 
         mAdapter.notifyDataSetChanged();
     }
+
+    /* Task to get all Transcations from the user */
+    public class GetTransactionsTask extends AsyncTask<Void, Void, Boolean> {
+
+        boolean success;
+        private Transaction sampleTransaction;
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+
+            ConnectionSource connectionSource = null;
+            try {
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+                // create our data-source for the database
+                connectionSource = new JdbcConnectionSource("jdbc:mysql://den1.mysql2.gear.host:3306/magicmoney?autoReconnect=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "magicmoney", "magic!");
+                // setup our database and DAOs
+                Dao<Transaction, Integer> transactionDao = DaoManager.createDao(connectionSource, Transaction.class);
+                sampleTransaction = new Transaction();
+
+                QueryBuilder<Transaction, Integer> qb = transactionDao.queryBuilder();
+
+                Where where = qb.where();
+                where.eq("EmpfängerKundenID", user.getID());
+                // and
+                where.or();
+                where.eq("SenderKundenID", user.getID());
+                PreparedQuery<Transaction> preparedQuery = qb.prepare();
+
+                transactions =  qb.query();
+
+                Log.d("Result", Integer.toString(transactions.size()));
+
+                success = true;
+
+            } catch (Exception e) {
+                System.out.println(e);
+                e.printStackTrace();
+
+                success = false;
+            }
+            finally {
+                // destroy the data source which should close underlying connections
+                if (connectionSource != null) {
+                    try {
+                        connectionSource.close();
+                    } catch (Exception e){
+                        System.out.println(e);
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return success;
+        }
+    }
+
+    /* Task to get current Balance from DB */
+    public class GetBalanceTask extends AsyncTask<Void, Void, Boolean> {
+
+        boolean success;
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+
+            ConnectionSource connectionSource = null;
+            try {
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+                // create our data-source for the database
+                connectionSource = new JdbcConnectionSource("jdbc:mysql://den1.mysql2.gear.host:3306/magicmoney?autoReconnect=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "magicmoney", "magic!");
+                // setup our database and DAOs
+                Dao<User, Integer> accountDao = DaoManager.createDao(connectionSource, User.class);
+
+                QueryBuilder<User, Integer> qb = accountDao.queryBuilder();
+
+                Where where = qb.where();
+                where.eq("ID", user.getID());
+
+                PreparedQuery<User> preparedQuery = qb.prepare();
+
+                List<User> balance =  qb.query();
+
+                user.setBalance(balance.get(0).getBalance());
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        balanceView.setText(user.getEURBalance());
+                    }
+                });
+
+                success = true;
+
+            } catch (Exception e) {
+                System.out.println(e);
+                e.printStackTrace();
+
+                success = false;
+            }
+            finally {
+                // destroy the data source which should close underlying connections
+                if (connectionSource != null) {
+                    try {
+                        connectionSource.close();
+                    } catch (Exception e){
+                        System.out.println(e);
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return success;
+        }
+    }
+
+
+
 }

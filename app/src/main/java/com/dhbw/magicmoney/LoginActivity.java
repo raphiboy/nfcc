@@ -325,7 +325,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 // read and write some data
                 user = accountDao.queryForEq("email",mEmail).get(0);
                 System.out.println(user.toString());
-                System.out.println("\n\nIt seems to have worked\n\n");
                 if(user.getPassword().equals(mPassword)) {
                     sucess = true;
                 } else {
@@ -367,7 +366,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 myIntent.putExtra("forename", user.getForename());
                 myIntent.putExtra("balance", user.getBalance());
                 LoginActivity.this.startActivity(myIntent);
-            } else {
+                }
+                else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }

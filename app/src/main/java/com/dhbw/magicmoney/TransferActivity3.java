@@ -26,8 +26,6 @@ public class TransferActivity3 extends AppCompatActivity implements NfcAdapter.O
     TextView tvNfcSignalSent = null;
 
     private NfcAdapter mNfcAdapter;
-    private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    private String transactionID ="";
 
     private ArrayList<String> dataToSendArray = new ArrayList<>();
 
@@ -39,7 +37,6 @@ public class TransferActivity3 extends AppCompatActivity implements NfcAdapter.O
         tvShowCode = findViewById(R.id.transfer3_showCode);
         tvNfcSignalSent = findViewById(R.id.tvNfcSignalSent);
 
-        transactionID = createTransactionID();
 
         //Generate a 4-Digit-Code
         Random random = new Random();
@@ -54,10 +51,10 @@ public class TransferActivity3 extends AppCompatActivity implements NfcAdapter.O
             transferValue = (String) bundle.get("transferValue");
         }
 
+        //Generate data which is going to be sent
         dataToSendArray.add(transferValue);
         dataToSendArray.add(generatedCode);
         dataToSendArray.add(HomeActivity.user.getForename() + " " + HomeActivity.user.getName());
-        dataToSendArray.add(transactionID);
         dataToSendArray.add(Integer.toString(HomeActivity.user.getID()));
 
         //Check if NFC is available on device
@@ -77,22 +74,10 @@ public class TransferActivity3 extends AppCompatActivity implements NfcAdapter.O
         abbortButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent myIntent = new Intent(TransferActivity3.this, TransferActivity2.class);
-                myIntent.putExtra("transferValue", transferValue);
+                Intent myIntent = new Intent(TransferActivity3.this, HomeActivity.class);
                 TransferActivity3.this.startActivity(myIntent);
             }
         });
-    }
-
-    @NonNull
-    private String createTransactionID() {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i <= 5; i++) {
-            int character = (int)(Math.random()*ALPHA_NUMERIC_STRING.length());
-            builder.append(ALPHA_NUMERIC_STRING.charAt(character));
-        }
-
-        return builder.toString();
     }
 
     @Override

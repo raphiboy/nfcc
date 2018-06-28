@@ -44,13 +44,13 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        Transaction transaction = transactionList.get(position);
-        holder.tvTransactionVolume.setText(transaction.getEURBalance());
-        if (transaction.getVolume()<0){
-            holder.tvTransactionVolume.setTextColor(Color.parseColor("#FF4081"));
-        }
-        holder.tvTransactionReceiver.setText("an: "+transaction.getEmailReceiver());
-        holder.tvTransactionDate.setText(transaction.getDate().toString());
+//        Transaction transaction = transactionList.get(position);
+//        holder.tvTransactionVolume.setText(transaction.getEURBalance());
+//        if (transaction.getVolume()<0){
+//            holder.tvTransactionVolume.setTextColor(Color.parseColor("#FF4081"));
+//        }
+//        holder.tvTransactionReceiver.setText("an: "+transaction.getEmailReceiver());
+//        holder.tvTransactionDate.setText(transaction.getDate().toString());
     }
 
     @Override

@@ -88,6 +88,14 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
                 else{
                     Log.d("Code","wrong");
 
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //TODO ErrorMessage if there is time left
+                            etCode.setText("");
+                        }
+                    });
+
                 }
             }
         });
@@ -125,55 +133,20 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
 
     }
 
+    //not used here actually
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
 
-        if (dataToSendArray.size() == 0) {
-            return null;
-        }
-
-        NdefRecord[] recordsToAttach = createRecords();
-
-        return new NdefMessage(recordsToAttach);
+        return null;
     }
 
+    //not used here actually
     @Override
     public void onNdefPushComplete(NfcEvent event) {
         Toast.makeText(this, "NFC signal sent!", Toast.LENGTH_SHORT);
 
     }
 
-    public NdefRecord[] createRecords(){
-        NdefRecord[] records = new NdefRecord[dataToSendArray.size() + 1];
-
-        //To Create Messages Manually if API is less than
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            for (int i = 0; i < dataToSendArray.size(); i++){
-                byte[] payload = dataToSendArray.get(i).
-                        getBytes(Charset.forName("UTF-8"));
-                NdefRecord record = new NdefRecord(
-                        NdefRecord.TNF_WELL_KNOWN,      //Our 3-bit Type name format
-                        NdefRecord.RTD_TEXT,            //Description of our payload
-                        new byte[0],                    //The optional id for our Record
-                        payload);                       //Our payload for the Record
-
-                records[i] = record;
-            }
-        }
-        //API is high enough that we can use createMime, which is preferred.
-        else {
-            for (int i = 0; i < dataToSendArray.size(); i++){
-                byte[] payload = dataToSendArray.get(i).
-                        getBytes(Charset.forName("UTF-8"));
-
-                NdefRecord record = NdefRecord.createMime("text/plain",payload);
-                records[i] = record;
-            }
-        }
-        records[dataToSendArray.size()] =
-                NdefRecord.createApplicationRecord(getPackageName());
-        return records;
-    }
 
     private void handleNfcIntent(Intent NfcIntent) {
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(NfcIntent.getAction())) {
@@ -195,8 +168,7 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
                 transferValue = dataReceivedArray.get(0);
                 code = dataReceivedArray.get(1);
                 name = dataReceivedArray.get(2);
-                transactionID = dataReceivedArray.get(3);
-                senderID = Integer.parseInt(dataReceivedArray.get(4));
+                senderID = Integer.parseInt(dataReceivedArray.get(3));
 
             }
             else {
@@ -216,6 +188,7 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
         handleNfcIntent(intent);
     }
 
+    /* Task to update Account Balance and to create a new Transaction into the Transaction DB */
     public class TransactionTask extends AsyncTask<Void, Void, Boolean> {
 
         private final int receiverID;
@@ -253,8 +226,8 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
                 updateBuilder.updateColumnValue("Kontostand", u2.getBalance() - transferValue);
                 updateBuilder.where().eq("ID",senderID);
                 updateBuilder.update();
+
                 transactionDao.create(transaction);
-                System.out.println("\n\nIt seems to have worked\n\n");
                 success = true;
             } catch (Exception e) {
                 System.out.println(e);
@@ -283,9 +256,7 @@ public class TagReceivedActivity extends AppCompatActivity implements NfcAdapter
 
             if (success) {
                 HomeActivity.user.riseBalance(transferValue);
-                //TODO Success meldung
             } else {
-                // Was passiert bei fail
             }
         }
 
