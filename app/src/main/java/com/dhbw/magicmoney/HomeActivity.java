@@ -117,9 +117,9 @@ public class HomeActivity extends NavigationActivity
 
 
     private void generateTransactions() {
-        //TODO
 
-        /*for (Transaction t : transactions) {
+        //TODO the following parts tries to show the transactions from the DB but it does not work
+        /* for (Transaction t : transactions) {
             Transaction u = new Transaction(t.senderID, t.receiverID, t.getTransferValue());
 
             transactionList.add(u);
